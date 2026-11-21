@@ -292,7 +292,16 @@ export const SITE_CONTENT = {
   news: {
     heading: 'Últimas novedades',
     subtitle:
-      'Conocé las actividades, encuentros, campañas y avances de nuestro trabajo comunitario.',
+      'Seguí las jornadas, convocatorias y novedades del trabajo comunitario directamente desde nuestro Instagram.',
+    instagram: {
+      handle: '@redpalermo',
+      // Reemplazá por el enlace real del perfil cuando esté confirmado (ej.: 'https://www.instagram.com/redpalermo/')
+      profileUrl: '',
+      // Pegá acá hasta 4 enlaces públicos de publicaciones o reels de Instagram
+      // (ej.: 'https://www.instagram.com/p/CODIGO/' o 'https://www.instagram.com/reel/CODIGO/')
+      // para incrustarlos automáticamente como embeds oficiales de Instagram.
+      postUrls: [] as string[],
+    },
     items: [
       {
         id: 'nueva-jornada',

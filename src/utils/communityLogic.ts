@@ -125,3 +125,36 @@ export function clampCarouselIndex(index: number, total: number): number {
   if (total <= 0) return 0;
   return Math.max(0, Math.min(index, total - 1));
 }
+
+export interface InstagramEmbedData {
+  type: 'p' | 'reel' | 'tv';
+  shortcode: string;
+  postUrl: string;
+  embedUrl: string;
+}
+
+export function parseInstagramEmbedUrl(rawUrl: string): InstagramEmbedData | null {
+  const trimmed = rawUrl.trim();
+  if (!trimmed) return null;
+
+  try {
+    const parsed = new URL(trimmed);
+    const host = parsed.hostname.toLowerCase();
+    if (host !== 'instagram.com' && host !== 'www.instagram.com' && host !== 'm.instagram.com') {
+      return null;
+    }
+
+    const match = parsed.pathname.match(/^\/(p|reel|tv)\/([A-Za-z0-9_-]{5,32})(?:\/|$)/);
+    if (!match) return null;
+
+    const type = match[1] as 'p' | 'reel' | 'tv';
+    const shortcode = match[2];
+    const postUrl = `https://www.instagram.com/${type}/${shortcode}/`;
+    const embedUrl = `https://www.instagram.com/${type}/${shortcode}/embed/captioned/`;
+
+    return { type, shortcode, postUrl, embedUrl };
+  } catch {
+    return null;
+  }
+}
+

@@ -7,6 +7,7 @@ import {
   isValidContactChannel,
   validateContactForm,
   clampCarouselIndex,
+  parseInstagramEmbedUrl,
 } from './communityLogic';
 
 test('formatUYU formats Uruguayan pesos with dot thousand separator', () => {
@@ -106,3 +107,21 @@ test('clampCarouselIndex bounds index safely', () => {
   assert.equal(clampCarouselIndex(9, 4), 3);
   assert.equal(clampCarouselIndex(1, 0), 0);
 });
+
+test('parseInstagramEmbedUrl converts valid post and reel links and rejects non-Instagram URLs', () => {
+  const post = parseInstagramEmbedUrl('https://www.instagram.com/p/C9AbCdEf123/?utm_source=ig_web_copy_link');
+  assert.deepEqual(post, {
+    type: 'p',
+    shortcode: 'C9AbCdEf123',
+    postUrl: 'https://www.instagram.com/p/C9AbCdEf123/',
+    embedUrl: 'https://www.instagram.com/p/C9AbCdEf123/embed/captioned/',
+  });
+
+  const reel = parseInstagramEmbedUrl('https://instagram.com/reel/XyZ_9876543/');
+  assert.equal(reel?.embedUrl, 'https://www.instagram.com/reel/XyZ_9876543/embed/captioned/');
+
+  assert.equal(parseInstagramEmbedUrl('https://example.com/p/C9AbCdEf123/'), null);
+  assert.equal(parseInstagramEmbedUrl('https://www.instagram.com/redpalermo/'), null);
+  assert.equal(parseInstagramEmbedUrl('not-a-url'), null);
+});
+

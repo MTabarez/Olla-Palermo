@@ -170,8 +170,11 @@ export default function App() {
         {/* Section 10 — Featured Community Project Banner */}
         <FeaturedProject onOpenProject={handleOpenFeaturedProject} />
 
-        {/* Section 11 — Latest News (4-column grid) */}
-        <NewsGrid onOpenNews={handleOpenNews} />
+        {/* Section 11 — Latest News (Instagram embed grid) */}
+        <NewsGrid
+          onOpenNews={handleOpenNews}
+          onOpenInstagramInfo={() => handleOpenSocialInfo('Instagram')}
+        />
 
         {/* Section 12 — Full-Width Final CTA */}
         <FinalCTA onOpenCollaborate={openCollaborate} />
