@@ -1,0 +1,6 @@
+{
+  "name": "Colectivo Palermo — Organización Comunitaria",
+  "description": "Sitio web institucional y prototipo editorial para organización comunitaria y olla popular del barrio Palermo, Montevideo, Uruguay.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
