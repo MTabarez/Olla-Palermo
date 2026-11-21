@@ -4,9 +4,17 @@ import fs from 'fs';
 import path from 'path';
 import {defineConfig} from 'vite';
 
+function resolveBuildBase(rawBase?: string): string {
+  const trimmed = rawBase?.trim();
+  if (!trimmed) {
+    return './';
+  }
+  return trimmed.endsWith('/') ? trimmed : `${trimmed}/`;
+}
+
 export default defineConfig(({command}) => {
   return {
-    base: command === 'build' ? process.env.VITE_BASE_PATH || './' : '/',
+    base: command === 'build' ? resolveBuildBase(process.env.VITE_BASE_PATH) : '/',
     plugins: [
       react(),
       tailwindcss(),
@@ -25,6 +33,34 @@ export default defineConfig(({command}) => {
           const distAssets = path.resolve(distDir, 'src/assets');
           if (fs.existsSync(distDir) && fs.existsSync(srcAssets)) {
             fs.cpSync(srcAssets, distAssets, {recursive: true, force: true});
+          }
+        },
+      },
+      // Ensures clean GitHub Pages static artifacts (.nojekyll, SPA 404 fallback,
+      // and strips internal design-reference uploads from public output).
+      {
+        name: 'github-pages-hygiene',
+        apply: 'build',
+        closeBundle(error?: Error): void {
+          if (error) {
+            return;
+          }
+          const distDir = path.resolve(__dirname, 'dist');
+          if (!fs.existsSync(distDir)) {
+            return;
+          }
+
+          fs.writeFileSync(path.join(distDir, '.nojekyll'), '');
+
+          const indexHtml = path.join(distDir, 'index.html');
+          const notFoundHtml = path.join(distDir, '404.html');
+          if (fs.existsSync(indexHtml)) {
+            fs.copyFileSync(indexHtml, notFoundHtml);
+          }
+
+          const internalRefDir = path.join(distDir, 'assets', 'aistudio');
+          if (fs.existsSync(internalRefDir)) {
+            fs.rmSync(internalRefDir, {recursive: true, force: true});
           }
         },
       },
